@@ -1,0 +1,18 @@
+﻿[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+
+[req_distinguished_name]
+countryName = Country Name (2 letter code)
+countryName_default = GB
+localityName = Locality Name (eg, city)
+localityName_default = Sheffield
+organizationName = Organization Name
+organizationName_default = Vespion Softworks
+organizationalUnitName = Organizational Unit Name (eg, section)
+organizationalUnitName_default = TradeNet
+commonName = Common Name (eg, YOUR name)
+
+[v3_req]
+keyUsage = critical,digitalSignature
+extendedKeyUsage = critical,codeSigning

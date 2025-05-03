@@ -1,0 +1,14 @@
+{
+	"name": "tradenet",
+	"private": true,
+	"workspaces": [
+		"src/*",
+		"src/plugin/*",
+		"src/data/*",
+		"src/interface/*"
+	],
+	"packageManager": "yarn@4.9.1",
+	"dependencies": {
+		"@changesets/cli": "^2.29.2"
+	}
+}

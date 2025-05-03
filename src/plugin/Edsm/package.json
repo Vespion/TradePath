@@ -1,0 +1,8 @@
+{
+	"name": "@tradepath/plugin.edsm",
+	"private": true,
+	"version": "0.1.0",
+	"dependencies": {
+		"@tradepath/plugin.contracts": "workspace:*"
+	}
+}

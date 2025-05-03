@@ -1,0 +1,8 @@
+{
+	"name": "@tradepath/datastore",
+	"private": true,
+	"version": "0.1.0",
+	"dependencies": {
+		"@tradepath/models": "workspace:*"
+	}
+}

@@ -1,0 +1,8 @@
+﻿<Project>
+	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+	<PropertyGroup>
+		<RootNamespace>TradePath.Plugins.$(MSBuildProjectName)</RootNamespace>
+		<AssemblyName>$(RootNamespace)</AssemblyName>
+	</PropertyGroup>
+</Project>

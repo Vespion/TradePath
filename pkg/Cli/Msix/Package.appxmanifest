@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+	xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+	xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+	xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+	xmlns:uap18="http://schemas.microsoft.com/appx/manifest/uap/windows10/18"
+	xmlns:uap8="http://schemas.microsoft.com/appx/manifest/uap/windows10/8"
+	xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+	xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+	IgnorableNamespaces="uap rescap uap18 uap8 uap3">
+
+	<Identity
+		Name="64812VespionSoftworks.TradePathCLI"
+		Publisher="CN=92CD43C7-5CF2-4D05-A5BD-1D9C5EE0CA11"
+		Version="0.1.0.0"/>
+
+	<mp:PhoneIdentity
+		PhoneProductId = '44F3DADE-11DA-4FFF-8E30-88B642D2E9FA"
+		PhonePublisherId = "00000000-0000-0000-0000-000000000000' />
+
+	<Properties>
+		<DisplayName>TradePath CLI</DisplayName>
+		<PublisherDisplayName>Vespion Softworks</PublisherDisplayName>
+		<Logo>Images\StoreLogo.png</Logo>
+	</Properties>
+
+	<Dependencies>
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0"/>
+		<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0"/>
+	</Dependencies>
+
+	<Resources>
+		<Resource Language="x-generate"/>
+	</Resources>
+
+	<Applications>
+		<Application
+			Id="App"
+			Executable="$targetnametoken$.exe"
+			EntryPoint="$targetentrypoint$"
+			uap18:TrustLevel="appContainer"
+			uap18:RuntimeBehavior="win32App"
+		>
+			<uap:VisualElements
+				DisplayName="TradePath CLI"
+				Description="Command Line Interface for TradePath"
+				BackgroundColor="transparent"
+				Square150x150Logo="Images\Square150x150Logo.png"
+				Square44x44Logo="Images\Square44x44Logo.png">
+				<uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
+				<uap:SplashScreen Image="Images\SplashScreen.png"/>
+			</uap:VisualElements>
+
+			<Extensions>
+				<uap3:Extension
+				  Category="windows.appExecutionAlias"
+				  Executable="Cli\TradePath.Cli.exe"
+				  EntryPoint="Windows.PartialTrustApplication">
+					<uap3:AppExecutionAlias>
+						<uap8:ExecutionAlias Alias="tradepath.exe" />
+					</uap3:AppExecutionAlias>
+				</uap3:Extension>
+			</Extensions>
+
+		</Application>
+	</Applications>
+
+	<Capabilities>
+		<Capability Name="internetClient"/>
+	</Capabilities>
+</Package>

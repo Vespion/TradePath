@@ -1,0 +1,11 @@
+{
+	"name": "@tradepath/cli",
+	"private": true,
+	"version": "0.1.0",
+	"dependencies": {
+		"@tradepath/datastore": "workspace:*",
+		"@tradepath/models": "workspace:*",
+		"@tradepath/plugin.contracts": "workspace:*",
+		"@tradepath/plugin.hosthelpers": "workspace:*"
+	}
+}

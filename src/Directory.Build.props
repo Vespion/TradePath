@@ -1,0 +1,28 @@
+﻿<Project>
+	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+	<ItemGroup>
+		<!-- Include must be the fully qualified .NET type name of the Attribute to create. -->
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<!-- _Parameter1, _Parameter2, etc. correspond to the
+				matching parameter of a constructor of that .NET attribute type -->
+			<_Parameter1>$(RootNamespace).Test</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup Condition="Exists('$([MSBuild]::EnsureTrailingSlash($(MSBuildProjectDirectory)))package.json')">
+		<PackageReference Include="JsonPeek" />
+	</ItemGroup>
+
+	<Target Name="ReadVersionProperties"
+			Condition="Exists('$([MSBuild]::EnsureTrailingSlash($(MSBuildProjectDirectory)))package.json')"
+			BeforeTargets="GetAssemblyVersion;GenerateAssemblyInfo"
+	>
+		<JsonPeek
+			ContentPath="$([MSBuild]::EnsureTrailingSlash($(MSBuildProjectDirectory)))package.json"
+			Query="$.version">
+			<Output TaskParameter="Result" PropertyName="Version" />
+			<Output TaskParameter="Result" PropertyName="PackageVersion" />
+		</JsonPeek>
+	</Target>
+</Project>

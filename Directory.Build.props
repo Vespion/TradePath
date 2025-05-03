@@ -1,0 +1,25 @@
+﻿<Project>
+	<PropertyGroup>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Deterministic>true</Deterministic>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<RootNamespace>TradePath.$(MSBuildProjectName)</RootNamespace>
+		<AssemblyName>$(RootNamespace)</AssemblyName>
+		<Authors>Vespion</Authors>
+		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<ValidlyConfiguration>
+			<AutoRequired>enabled</AutoRequired>
+			<AutoInEnum>enabled</AutoInEnum>
+		</ValidlyConfiguration>
+	</PropertyGroup>
+</Project>
