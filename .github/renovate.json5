@@ -1,0 +1,37 @@
+﻿{
+	"extends": [
+		"config:best-practices",
+		":enablePreCommit",
+		":approveMajorUpdates",
+		":automergeMinor",
+		":automergeRequireAllStatusChecks",
+		":automergeTesters",
+		":combinePatchMinorReleases",
+		":configMigration",
+		":dependencyDashboardApproval",
+		":enableVulnerabilityAlertsWithLabel(p:high)",
+		":labels(dependencies,devops)",
+		":renovatePrefix",
+		":semanticCommitScope(dependency)",
+		"security:openssf-scorecard",
+		"group:dotNetCore",
+		"group:dotnetMonorepo",
+		"group:opentelemetry-dotnetMonorepo",
+		"group:opentelemetry-dotnet-contribMonorepo",
+		"group:testcontainers-dotnetMonorepo"
+	],
+	"packageRules": [
+		{
+			"groupName": "tunit-dotnet monorepo",
+			"matchUpdateTypes": [
+				"digest",
+				"patch",
+				"minor",
+				"major"
+			],
+			"matchSourceUrls": [
+				"https://github.com/thomhurst/TUnit"
+			]
+		}
+	]
+}
