@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TradePath.Plugins.HostHelpers;
 using TradePath.Cli.Commands;
+using TradePath.Plugins.HostHelpers.Nuget.Project;
 
 namespace TradePath.Cli.Binders;
 
@@ -15,6 +16,6 @@ public class PluginManagerBinder: BinderBase<IPluginManager>
 
 		var pluginPath = Path.Combine(workingDirectory.FullName, "plugins");
 
-		return new PluginManager(pluginPath, bindingContext.GetRequiredService<ILoggerFactory>().CreateLogger<PluginManager>());
+		return new PluginManager(pluginPath, bindingContext.GetRequiredService<ILoggerFactory>());
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 
-namespace TradePath.Cli;
+namespace TradePath.Plugins.HostHelpers;
 
 internal static class Telemetry
 {

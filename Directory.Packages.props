@@ -10,6 +10,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.4" />
@@ -35,7 +36,7 @@
   <ItemGroup Label="PackagingVersions">
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageVersion Include="Cake.Frosting" Version="5.0.0" />
-    <PackageVersion Include="JsonPeek" Version="1.2.0" />
+    <PackageVersion Include="JsonPeek" Version="1.2.0" PrivateAssets="all" DevelopmentDependency="true" ExcludeAssets="runtime"/>
   </ItemGroup>
   <ItemGroup Label="TransitiveDependencyVersionPins">
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.8.0" />

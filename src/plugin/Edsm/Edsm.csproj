@@ -4,10 +4,16 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Contracts\Contracts.csproj" />
+	  <ProjectReference Include="..\Contracts\Contracts.csproj">
+		  <PrivateAssets>all</PrivateAssets>
+		  <ExcludeAssets>runtime</ExcludeAssets>
+		  <DevelopmentDependency>true</DevelopmentDependency>
+	  </ProjectReference>
 	</ItemGroup>
 
 </Project>

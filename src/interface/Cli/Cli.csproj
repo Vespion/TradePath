@@ -47,23 +47,62 @@
 		<ProjectReference Include="..\..\plugin\HostHelpers\HostHelpers.csproj" />
 	</ItemGroup>
 
-<!--	<ItemGroup>-->
-<!--		<ProjectReference-->
-<!--			Include="..\..\plugin\Edsm\Edsm.csproj"-->
-<!--			ReferenceOutputAssembly="false"-->
-<!--			OutputItemType="PluginReference"-->
-<!--		/>-->
-<!--	</ItemGroup>-->
+	<ItemGroup Condition="'$(_IsPublishing)' != 'yes'">
+		<ProjectReference
+			Include="..\..\plugin\Edsm\Edsm.csproj"
+			ReferenceOutputAssembly="false"
+			OutputItemType="PluginReference"
+		/>
+	</ItemGroup>
 
-<!--	<Target-->
-<!--		Name="MovePackageToLocalFolder"-->
-<!--		Condition="'$(_IsPublishing)' != 'yes'"-->
-<!--		AfterTargets="Build"-->
-<!--		Inputs="@(PluginReference)"-->
-<!--		Outputs="@(PluginReference->'$(OutDir)plugins\%(Filename)%(Extension)')"-->
-<!--	>-->
-<!--		<Move SourceFiles="@(PluginReference)" DestinationFolder="$(OutDir)plugins" />-->
-<!--	</Target>-->
+	<Target
+		Name="ConfigurePluginFeeds"
+		BeforeTargets="Build"
+	>
+		<ItemGroup>
+			<PluginFeedReference Include="@(PluginReference->'%(filename)')">
+				<FeedUrl>@(PluginReference->'%(RelativeDir)..')</FeedUrl>
+			</PluginFeedReference>
+			<PluginFeedReference Include="nuget.org">
+				<FeedUrl>https://api.nuget.org/v3/index.json</FeedUrl>
+			</PluginFeedReference>
+		</ItemGroup>
+		
+		<PropertyGroup>
+			<PluginNuGetConfig>
+<![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<packageSources>
+		<clear />
+		@(PluginFeedReference->'<add key="%(Identity)" value="%(FeedUrl)" />')
+	</packageSources>
+	<config>
+		<add key="dependencyVersion" value="HighestMinor" />
+		<add key="globalPackagesFolder" value="./plugins/pkg" />
+	</config>
+</configuration>]]>
+			</PluginNuGetConfig>
+		</PropertyGroup>
+		
+		<WriteLinesToFile
+			File="$(IntermediateOutputPath)plugins.nuget.config"
+			Lines="$(PluginNuGetConfig)"
+			Overwrite="true"
+		/>
+		
+		<ItemGroup>
+			<Content Include="$(IntermediateOutputPath)plugins.nuget.config">
+				<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+				<Visible>false</Visible>
+				<TargetPath>plugins/nuget.config</TargetPath>
+			</Content>
+			<FileWrites Include="$(IntermediateOutputPath)plugins.nuget.config" />
+		</ItemGroup>
+		
+<!--		<XmlPoke Value="&lt;clear />"-->
+<!--			Query="/configuration/packageSources/clear"-->
+<!--			XmlInputPath="$(OutDir)plugins\nuget.config"-->
+	</Target>
 
 
 	<ItemGroup>
@@ -74,6 +113,7 @@
 	  <EmbeddedResource Update="Resources\Commands.sv.resx">
 	    <DependentUpon>Commands.resx</DependentUpon>
 	  </EmbeddedResource>
+	  <None Remove="Resources\default.nuget.config" />
 	</ItemGroup>
 
 	<ItemGroup>
