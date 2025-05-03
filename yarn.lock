@@ -301,9 +301,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tradenet/edsm@workspace:src/plugin/Edsm":
+"@tradepath/cli@workspace:src/interface/Cli":
   version: 0.0.0-use.local
-  resolution: "@tradenet/edsm@workspace:src/plugin/Edsm"
+  resolution: "@tradepath/cli@workspace:src/interface/Cli"
+  dependencies:
+    "@tradepath/datastore": "workspace:*"
+    "@tradepath/models": "workspace:*"
+    "@tradepath/plugin.contracts": "workspace:*"
+    "@tradepath/plugin.hosthelpers": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@tradepath/datastore@workspace:*, @tradepath/datastore@workspace:src/data/DataStore":
+  version: 0.0.0-use.local
+  resolution: "@tradepath/datastore@workspace:src/data/DataStore"
+  dependencies:
+    "@tradepath/models": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@tradepath/models@workspace:*, @tradepath/models@workspace:src/data/Models":
+  version: 0.0.0-use.local
+  resolution: "@tradepath/models@workspace:src/data/Models"
+  languageName: unknown
+  linkType: soft
+
+"@tradepath/plugin.contracts@workspace:*, @tradepath/plugin.contracts@workspace:src/plugin/Contracts":
+  version: 0.0.0-use.local
+  resolution: "@tradepath/plugin.contracts@workspace:src/plugin/Contracts"
+  dependencies:
+    "@tradepath/models": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@tradepath/plugin.edsm@workspace:src/plugin/Edsm":
+  version: 0.0.0-use.local
+  resolution: "@tradepath/plugin.edsm@workspace:src/plugin/Edsm"
+  dependencies:
+    "@tradepath/plugin.contracts": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@tradepath/plugin.hosthelpers@workspace:*, @tradepath/plugin.hosthelpers@workspace:src/plugin/HostHelpers":
+  version: 0.0.0-use.local
+  resolution: "@tradepath/plugin.hosthelpers@workspace:src/plugin/HostHelpers"
   languageName: unknown
   linkType: soft
 
