@@ -9,6 +9,7 @@
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Extensions.DependencyModel" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+	  <PackageReference Include="Microsoft.Extensions.Options" />
 	  <PackageReference Include="NuGet.Common" />
 	  <PackageReference Include="NuGet.Configuration" />
 	  <PackageReference Include="NuGet.Frameworks" />
@@ -17,23 +18,12 @@
 	  <PackageReference Include="NuGet.Protocol" />
 	  <PackageReference Include="NuGet.Resolver" />
 	  <PackageReference Include="NuGet.Versioning" />
+	  <PackageReference Include="Prise" />
 	  <PackageReference Include="Vogen" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Plugins.resx">
-	    <Generator>PublicResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Plugins.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Resources\default.nuget.config" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Resources\Plugins.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Plugins.resx</DependentUpon>
-	  </Compile>
+	  <Compile Remove="PluginInstallConfiguration.cs" />
 	</ItemGroup>
 
 </Project>

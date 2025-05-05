@@ -14,12 +14,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
-		<PackageReference Include="Prise" />
-		<PackageReference Include="Spectre.Console" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core"/>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite"/>
+		<PackageReference Include="Microsoft.Extensions.Logging.Console"/>
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug"/>
+		<PackageReference Include="Prise"/>
+		<PackageReference Include="Spectre.Console"/>
 		<PackageReference Include="System.CommandLine"/>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
 			<PrivateAssets>all</PrivateAssets>
@@ -30,21 +30,21 @@
 	<Choose>
 		<When Condition="'$(UseSystemSqlite)' == 'true'">
 			<ItemGroup>
-				<PackageReference Include="SQLitePCLRaw.bundle_sqlite3" />
+				<PackageReference Include="SQLitePCLRaw.bundle_sqlite3"/>
 			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
+				<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3"/>
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\data\DataStore\DataStore.csproj" />
-		<ProjectReference Include="..\..\data\Models\Models.csproj" />
-		<ProjectReference Include="..\..\plugin\Contracts\Contracts.csproj" />
-		<ProjectReference Include="..\..\plugin\HostHelpers\HostHelpers.csproj" />
+		<ProjectReference Include="..\..\data\DataStore\DataStore.csproj"/>
+		<ProjectReference Include="..\..\data\Models\Models.csproj"/>
+		<ProjectReference Include="..\..\plugin\Contracts\Contracts.csproj"/>
+		<ProjectReference Include="..\..\plugin\HostHelpers\HostHelpers.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(_IsPublishing)' != 'yes'">
@@ -57,7 +57,9 @@
 
 	<Target
 		Name="ConfigurePluginFeeds"
-		BeforeTargets="Build"
+		BeforeTargets="AssignTargetPaths"
+		Inputs="@(PluginReference)"
+		Outputs="$(IntermediateOutputPath)plugins.nuget.config"
 	>
 		<ItemGroup>
 			<PluginFeedReference Include="@(PluginReference->'%(filename)')">
@@ -67,10 +69,10 @@
 				<FeedUrl>https://api.nuget.org/v3/index.json</FeedUrl>
 			</PluginFeedReference>
 		</ItemGroup>
-		
+
 		<PropertyGroup>
 			<PluginNuGetConfig>
-<![CDATA[<?xml version="1.0" encoding="utf-8"?>
+				<![CDATA[<?xml version="1.0" encoding="utf-8"?>
 <configuration>
 	<packageSources>
 		<clear />
@@ -83,45 +85,41 @@
 </configuration>]]>
 			</PluginNuGetConfig>
 		</PropertyGroup>
-		
+
 		<WriteLinesToFile
 			File="$(IntermediateOutputPath)plugins.nuget.config"
 			Lines="$(PluginNuGetConfig)"
 			Overwrite="true"
 		/>
-		
+
 		<ItemGroup>
 			<Content Include="$(IntermediateOutputPath)plugins.nuget.config">
 				<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 				<Visible>false</Visible>
 				<TargetPath>plugins/nuget.config</TargetPath>
 			</Content>
-			<FileWrites Include="$(IntermediateOutputPath)plugins.nuget.config" />
+			<FileWrites Include="$(IntermediateOutputPath)plugins.nuget.config"/>
 		</ItemGroup>
-		
-<!--		<XmlPoke Value="&lt;clear />"-->
-<!--			Query="/configuration/packageSources/clear"-->
-<!--			XmlInputPath="$(OutDir)plugins\nuget.config"-->
 	</Target>
 
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Commands.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Commands.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
-	  <EmbeddedResource Update="Resources\Commands.sv.resx">
-	    <DependentUpon>Commands.resx</DependentUpon>
-	  </EmbeddedResource>
-	  <None Remove="Resources\default.nuget.config" />
+		<EmbeddedResource Update="Resources\Commands.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Commands.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<EmbeddedResource Update="Resources\Commands.sv.resx">
+			<DependentUpon>Commands.resx</DependentUpon>
+		</EmbeddedResource>
+		<None Remove="Resources\default.nuget.config"/>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Resources\Commands.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Commands.resx</DependentUpon>
-	  </Compile>
+		<Compile Update="Resources\Commands.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Commands.resx</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 </Project>

@@ -9,11 +9,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Contracts\Contracts.csproj">
-		  <PrivateAssets>all</PrivateAssets>
-		  <ExcludeAssets>runtime</ExcludeAssets>
-		  <DevelopmentDependency>true</DevelopmentDependency>
-	  </ProjectReference>
+		<ProjectReference Include="..\Contracts\Contracts.csproj">
+			<PrivateAssets>all</PrivateAssets>
+			<ExcludeAssets>runtime</ExcludeAssets>
+			<DevelopmentDependency>true</DevelopmentDependency>
+		</ProjectReference>
+		<PackageReference Include="Prise">
+			<PrivateAssets>all</PrivateAssets>
+			<ExcludeAssets>runtime</ExcludeAssets>
+			<DevelopmentDependency>true</DevelopmentDependency>
+		</PackageReference>
 	</ItemGroup>
 
 </Project>

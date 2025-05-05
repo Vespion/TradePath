@@ -1,6 +1,6 @@
 using NuGet.Versioning;
 
-namespace TradePath.Plugins.HostHelpers;
+namespace TradePath.Plugins.HostHelpers.Models;
 
 public readonly record struct PluginInstallConfiguration(
 	PluginName Name,

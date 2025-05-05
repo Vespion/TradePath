@@ -14,6 +14,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.4" />
     <PackageVersion Include="NetTopologySuite" Version="2.6.0" />
     <PackageVersion Include="NuGet.Common" Version="6.13.2" />
     <PackageVersion Include="NuGet.Configuration" Version="6.13.2" />
@@ -36,7 +37,7 @@
   <ItemGroup Label="PackagingVersions">
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
     <PackageVersion Include="Cake.Frosting" Version="5.0.0" />
-    <PackageVersion Include="JsonPeek" Version="1.2.0" PrivateAssets="all" DevelopmentDependency="true" ExcludeAssets="runtime"/>
+    <PackageVersion Include="JsonPeek" Version="1.2.0" PrivateAssets="all" DevelopmentDependency="true" ExcludeAssets="runtime" />
   </ItemGroup>
   <ItemGroup Label="TransitiveDependencyVersionPins">
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.8.0" />

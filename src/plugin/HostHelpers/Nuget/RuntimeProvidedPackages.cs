@@ -1,4 +1,4 @@
-namespace TradePath.Plugins.HostHelpers.Nuget.Bare;
+namespace TradePath.Plugins.HostHelpers.Nuget;
 
 /// <summary>
     /// Contains a pre-determined list of NuGet packages that are provided by the run-time, and

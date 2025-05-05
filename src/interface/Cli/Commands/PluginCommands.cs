@@ -7,10 +7,9 @@ using Prise;
 using Prise.DependencyInjection;
 using Spectre.Console;
 using TradePath.Plugins.HostHelpers;
-using TradePath.Plugins.HostHelpers.Progress;
 using TradePath.Cli.Binders;
 using TradePath.Plugins.Contracts;
-using PluginName = TradePath.Plugins.HostHelpers.PluginName;
+using TradePath.Plugins.HostHelpers.Models;
 
 namespace TradePath.Cli.Commands;
 
@@ -140,27 +139,17 @@ public class PluginCommands
 		async Task<int> Handle(ILogger logger, LogLevel verbosity, IAnsiConsole console,
 			IPluginManager pluginInstallation)
 		{
-			await pluginInstallation.InstallPlugin(new PluginInstallConfiguration(
+			await pluginInstallation.InstallPluginAsync(new PluginInstallConfiguration(
 				PluginName.From("TradePath.Plugins.Edsm"),
 				VersionRange.All,
 				false
 			));
 
+			var scan = await pluginInstallation.FindPluginsAsync<ISystemNavigationProvider>();
+
 			return 1;
-
-			var sc = new ServiceCollection();
-
-			sc.AddPrise();
-			sc.AddLogging(lb => lb.AddConsole());
 			
-			var sp = sc.BuildServiceProvider();
-			
-			var loader = sp.GetRequiredService<IPluginLoader>();
-
-			var pluginDir = Path.GetFullPath("./plugins");
-			
-			var scan = await loader.FindPlugin<ISystemNavigationProvider>(pluginDir);
-			var plugin = await loader.LoadPlugin<ISystemNavigationProvider>(scan);
+			var plugin = await pluginInstallation.LoadPluginAsync<ISystemNavigationProvider>(scan.First());
 
 			try
 			{
