@@ -19,11 +19,11 @@ public partial class PluginManager(
 	}
 
 	/// <inheritdoc />
-	public async Task<IReadOnlyCollection<PluginDescriptor>> FindPluginsAsync<T>(CancellationToken cancellationToken = default)
+	public async Task<IReadOnlyCollection<PluginLoadingDescriptor>> FindPluginsAsync<T>(CancellationToken cancellationToken = default)
 	{
 		var scanResults = await pluginLoader.FindPlugins<T>(Path.Combine(configuration.Value.PluginFolder, "install"));
 		
-		var pluginDescriptors = new List<PluginDescriptor>();
+		var pluginDescriptors = new List<PluginLoadingDescriptor>();
 		foreach (var scanResult in scanResults)
 		{
 			var directory = Path.GetDirectoryName(scanResult.AssemblyPath);
@@ -46,15 +46,21 @@ public partial class PluginManager(
 			var reader = new PackageFolderReader(directory);
 			var packageIdentity = await reader.GetIdentityAsync(cancellationToken);
 			
-			pluginDescriptors.Add(new PluginDescriptor((PluginName)packageIdentity.Id, packageIdentity.Version));
+			pluginDescriptors.Add(new PluginLoadingDescriptor(
+				new PluginDescriptor((PluginName)packageIdentity.Id, packageIdentity.Version),
+				scanResult
+			));
 		}
 		
 		return pluginDescriptors;
 	}
-
+	
 	/// <inheritdoc />
-	public async Task<T> LoadPluginAsync<T>(PluginDescriptor plugin, CancellationToken cancellationToken = default)
+	public async Task<T> LoadPluginAsync<T>(
+		PluginLoadingDescriptor plugin,
+		Action<PluginLoadContext>? configure = null,
+		CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		return await pluginLoader.LoadPlugin<T>(plugin.scanResult, null, configure);
 	}
 }

@@ -8,9 +8,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="NetTopologySuite"/>
-		<PackageReference Include="Validly.SourceGenerator"/>
+		<PackageReference Include="Validly.SourceGenerator">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Validly.Extensions.Validators"/>
-		<PackageReference Include="Vogen"/>
+		<PackageReference Include="Vogen">
+<!--			<PrivateAssets>all</PrivateAssets>-->
+<!--			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>-->
+		</PackageReference>
 	</ItemGroup>
 
 </Project>

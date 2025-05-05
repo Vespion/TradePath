@@ -146,8 +146,6 @@ public class PluginCommands
 			));
 
 			var scan = await pluginInstallation.FindPluginsAsync<ISystemNavigationProvider>();
-
-			return 1;
 			
 			var plugin = await pluginInstallation.LoadPluginAsync<ISystemNavigationProvider>(scan.First());
 

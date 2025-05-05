@@ -9,7 +9,10 @@
 	<ItemGroup>
 		<PackageReference Include="NetTopologySuite"/>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-		<PackageReference Include="Vogen" />
+		<PackageReference Include="Vogen">
+<!--			<PrivateAssets>all</PrivateAssets>-->
+<!--			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>-->
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>

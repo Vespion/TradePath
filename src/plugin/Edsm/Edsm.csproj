@@ -10,14 +10,12 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Contracts\Contracts.csproj">
-			<PrivateAssets>all</PrivateAssets>
+			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
-			<DevelopmentDependency>true</DevelopmentDependency>
 		</ProjectReference>
 		<PackageReference Include="Prise">
-			<PrivateAssets>all</PrivateAssets>
-			<ExcludeAssets>runtime</ExcludeAssets>
-			<DevelopmentDependency>true</DevelopmentDependency>
+<!--			<PrivateAssets>all</PrivateAssets>-->
+<!--			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>-->
 		</PackageReference>
 	</ItemGroup>
 
