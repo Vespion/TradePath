@@ -1,0 +1,28 @@
+﻿<Project>
+<!--	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />-->
+
+	<PropertyGroup Condition="'$(IsPlugin)' == 'true'">
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(IsPlugin)' == 'true'">
+		<ProjectReference Include="$(MSBuildThisFileDirectory)\Contracts\Contracts.csproj">
+			<Private>false</Private>
+		</ProjectReference>
+		<PackageReference Include="Prise" />
+	</ItemGroup>
+
+	<Target Name="AddRuntimeDependenciesToContent"
+			Condition="'$(IsPlugin)' == 'true'"
+			BeforeTargets="GetCopyToOutputDirectoryItems;_GetBuildOutputFilesWithTfm"
+			DependsOnTargets="GenerateBuildDependencyFile;
+                            GenerateBuildRuntimeConfigurationFiles">
+		<ItemGroup>
+			<ContentWithTargetPath Include="$(ProjectDepsFilePath)" TargetPath="$(AssemblyName).deps.json" CopyToOutputDirectory="PreserveNewest" />
+			<BuildOutputInPackage Include="$(ProjectDepsFilePath)" />
+<!--			<ContentWithTargetPath Include="$(ProjectRuntimeConfigFilePath)" TargetPath="$(AssemblyName).runtimeconfig.json" CopyToOutputDirectory="PreserveNewest" />-->
+		</ItemGroup>
+	</Target>
+</Project>

@@ -2,21 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<EnableDynamicLoading>true</EnableDynamicLoading>
+		<IsPlugin>true</IsPlugin>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Contracts\Contracts.csproj">
-			<Private>false</Private>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</ProjectReference>
-		<PackageReference Include="Prise">
-<!--			<PrivateAssets>all</PrivateAssets>-->
-<!--			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>-->
-		</PackageReference>
-	</ItemGroup>
 
 </Project>

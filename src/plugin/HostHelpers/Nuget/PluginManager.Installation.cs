@@ -69,8 +69,11 @@ public partial class PluginManager
 
 
 	/// <inheritdoc />
-	public async Task InstallPluginAsync(PluginInstallConfiguration plugin,
-		CancellationToken cancellationToken = default)
+	public async Task InstallPluginAsync(
+		PluginInstallConfiguration plugin,
+		IProgress<PluginInstallationProgress>? progress = null,
+		CancellationToken cancellationToken = default
+	)
 	{
 		using var act = Telemetry.ActivitySource.StartActivity();
 		using (logger.BeginScope(plugin))
@@ -105,19 +108,21 @@ public partial class PluginManager
 					SourceRepositoryProvider.GetRepositories().ToArray(),
 					DependencyContext.Default!,
 					allPackages,
+					progress,
 					cancellationToken
 				);
  
+				progress?.Report(new PluginInstallationProgress(null, null, true));
 				var packagesToInstall = GetPackagesToInstall(
 					SourceRepositoryProvider,
 					nugetLogger,
 					[plugin],
 					allPackages
-				);
+				).ToArray();
  
 				var packageDirectory = Path.Combine(configuration.Value.PluginFolder, "install");
 				
-				await InstallPackages(sourceCacheContext, nugetLogger, packagesToInstall, packageDirectory, cancellationToken);
+				await InstallPackages(sourceCacheContext, nugetLogger, packagesToInstall, packageDirectory, progress, cancellationToken);
 			}
 		}
 	}
@@ -125,8 +130,9 @@ public partial class PluginManager
 	private async Task InstallPackages(
 		SourceCacheContext sourceCacheContext,
 		ILogger nLogger, 
-		IEnumerable<SourcePackageDependencyInfo> packagesToInstall,
+		IReadOnlyCollection<SourcePackageDependencyInfo> packagesToInstall,
 		string rootPackagesDirectory, 
+		IProgress<PluginInstallationProgress>? progress,
 		CancellationToken cancellationToken
 	)
 	{
@@ -137,39 +143,69 @@ public partial class PluginManager
 			ClientPolicyContext.GetClientPolicy(Settings, nLogger),
 			nLogger
 		);
+
+		progress?.Report(new PluginInstallationProgress(null, null, false,
+			packagesToInstall.ToDictionary(x => x.Id, _ => 0)
+		));
 		
 		foreach (var package in packagesToInstall)
 		{
-			PackageReaderBase packageReader;
-			var installedPath = packagePathResolver.GetInstalledPath(package);
-			if (installedPath == null)
+			PackageReaderBase packageReader = null!;
+			try
 			{
-				var downloadResource = await package.Source.GetResourceAsync<DownloadResource>(cancellationToken);
- 
-				// Download the package (might come from the shared package cache).
-				var downloadResult = await downloadResource.GetDownloadResourceResultAsync(
-					package,
-					new PackageDownloadContext(sourceCacheContext),
-					SettingsUtility.GetGlobalPackagesFolder(Settings),
-					nLogger,
+				progress?.Report(new PluginInstallationProgress(InstallationTasks: new Dictionary<string, int>
+				{
+					{package.Id, 1}
+				}));
+				var installedPath = packagePathResolver.GetInstalledPath(package);
+				if (installedPath == null)
+				{
+					progress?.Report(new PluginInstallationProgress(InstallationTasks: new Dictionary<string, int>
+					{
+						{package.Id, 2}
+					}));
+					
+					var downloadResource = await package.Source.GetResourceAsync<DownloadResource>(cancellationToken);
+
+					// Download the package (might come from the shared package cache).
+					var downloadResult = await downloadResource.GetDownloadResourceResultAsync(
+						package,
+						new PackageDownloadContext(sourceCacheContext),
+						SettingsUtility.GetGlobalPackagesFolder(Settings),
+						nLogger,
+						cancellationToken
+					);
+
+					packageReader = downloadResult.PackageReader;
+				}
+				else
+				{
+					packageReader = new PackageFolderReader(installedPath);
+				}
+
+				progress?.Report(new PluginInstallationProgress(InstallationTasks: new Dictionary<string, int>
+				{
+					{package.Id, 3}
+				}));
+				
+				// Extract the package into the target directory.
+				await PackageExtractor.ExtractPackageAsync(
+					"downloadResult.PackageSource",
+					packageReader,
+					packagePathResolver,
+					packageExtractionContext,
 					cancellationToken
 				);
-
-				packageReader = downloadResult.PackageReader;
+				
+				progress?.Report(new PluginInstallationProgress(InstallationTasks: new Dictionary<string, int>
+				{
+					{package.Id, 4}
+				}));
 			}
-			else
+			finally
 			{
-				packageReader = new PackageFolderReader(installedPath);
+				packageReader?.Dispose();
 			}
-			
-			// Extract the package into the target directory.
-			await PackageExtractor.ExtractPackageAsync(
-				"downloadResult.PackageSource",
-				packageReader,
-				packagePathResolver,
-				packageExtractionContext,
-				cancellationToken
-			);
 		}
 	}
 	
@@ -224,6 +260,7 @@ public partial class PluginManager
 		ICollection<SourceRepository> repositories,
 		DependencyContext hostDependencies,
 		ISet<SourcePackageDependencyInfo> availablePackages,
+		IProgress<PluginInstallationProgress>? progress,
 		CancellationToken cancelToken
 	)
 	{
@@ -265,6 +302,10 @@ public partial class PluginManager
 			// Recurse through each package.
 			foreach (var dependency in actualSourceDep.Dependencies)
 			{
+				progress?.Report(new PluginInstallationProgress(new Dictionary<string, string>
+				{
+					{actualSourceDep.Id, dependency.Id}
+				}));
 				await GetPackageDependencies(
 					new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion),
 					cacheContext,
@@ -273,8 +314,14 @@ public partial class PluginManager
 					repositories,
 					hostDependencies,
 					availablePackages,
+					progress,
 					cancelToken
 				);
+				await Task.Delay(TimeSpan.FromSeconds(12), cancelToken);
+				progress?.Report(new PluginInstallationProgress(null, new List<string>
+				{
+					actualSourceDep.Id
+				}));
 			}
 
 			break;

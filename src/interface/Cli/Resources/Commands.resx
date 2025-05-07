@@ -81,6 +81,36 @@
 	<data name="Plugin.Install.Description" xml:space="preserve">
 		<value>Install a plugin</value>
 	</data>
+	<data name="Plugin.Install.Messages.ResolvingDependencies" xml:space="preserve">
+		<value>Resolving plugin dependency tree</value>
+	</data>
+	<data name="Plugin.Install.Messages.SimplifyingDependencies" xml:space="preserve">
+		<value>Reducing plugin dependency tree</value>
+	</data>
+	<data name="Plugin.Install.Messages.InstallingPlugin" xml:space="preserve">
+		<value>Installing plugin</value>
+	</data>
+	<data name="Plugin.Install.Messages.InvalidVersionRange" xml:space="preserve">
+		<value>Cannot parse argument '{0}' as a valid NuGet version range.</value>
+	</data>
+	<data name="Plugin.Install.Arguments.Id.Name" xml:space="preserve">
+		<value>id</value>
+	</data>
+	<data name="Plugin.Install.Arguments.Id.Description" xml:space="preserve">
+		<value>The ID of the plugin</value>
+	</data>
+	<data name="Plugin.Install.Options.Version.Name" xml:space="preserve">
+		<value>--version</value>
+	</data>
+	<data name="Plugin.Install.Options.Version.Description" xml:space="preserve">
+		<value>The plugin version, if not specified, defaults to the latest version</value>
+	</data>
+	<data name="Plugin.Install.Options.PreRelease.Name" xml:space="preserve">
+		<value>--pre|--prerelease</value>
+	</data>
+	<data name="Plugin.Install.Options.PreRelease.Description" xml:space="preserve">
+		<value>Enables the use of pre-release versions</value>
+	</data>
 	<data name="Plugin.Uninstall.Name" xml:space="preserve">
 		<value>uninstall</value>
 	</data>

@@ -5,7 +5,7 @@ namespace TradePath.Plugins.HostHelpers;
 
 public interface IPluginManager
 { 
-	Task InstallPluginAsync(PluginInstallConfiguration plugin, CancellationToken cancellationToken = default);
+	Task InstallPluginAsync(PluginInstallConfiguration plugin, IProgress<PluginInstallationProgress>? progress = null, CancellationToken cancellationToken = default);
 	
 	Task<IReadOnlyCollection<PluginDescriptor>> ListPluginsAsync(CancellationToken cancellationToken = default);
 	

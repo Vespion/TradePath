@@ -1,4 +1,6 @@
-﻿using System.CommandLine;
+﻿using System.Collections.ObjectModel;
+using System.CommandLine;
+using System.CommandLine.Parsing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NuGet.Packaging.Core;
@@ -128,40 +130,192 @@ public class PluginCommands
 	private static Command BuildInstallCommand()
 	{
 		var cmd = new Command(Resources.Commands.Plugin_Install_Name, Resources.Commands.Plugin_Install_Description);
-		cmd.SetHandler(Handle,
+		
+		var pluginIdArgument = new Argument<string>(
+			Resources.Commands.Plugin_Install_Arguments_Id_Name,
+			Resources.Commands.Plugin_Install_Arguments_Id_Description
+		)
+		{
+			Arity = ArgumentArity.ExactlyOne
+		};
+		
+		var pluginVersionOption = new Option<VersionRange?>(
+			Resources.Commands.Plugin_Install_Options_Version_Name.Split('|'),
+			parseArgument: result =>
+			{
+				var str = result.Tokens.Single().Value;
+				
+				if (VersionRange.TryParse(str, out var versionRange))
+				{
+					return versionRange;
+				}
+
+				result.ErrorMessage = string.Format(Resources.Commands.Plugin_Install_Messages_InvalidVersionRange, str);
+
+				return null;
+			},
+			false,
+			Resources.Commands.Plugin_Install_Options_Version_Description
+		)
+		{
+			IsRequired = false,
+			Arity = ArgumentArity.ExactlyOne
+		};
+		
+		var pluginPreleaseOption = new Option<bool>(
+			Resources.Commands.Plugin_Install_Options_PreRelease_Name.Split('|'),
+			Resources.Commands.Plugin_Install_Options_PreRelease_Description
+		)
+		{
+			IsRequired = false,
+			Arity = ArgumentArity.ZeroOrOne
+		};
+		
+		cmd.AddArgument(pluginIdArgument);
+		cmd.AddOption(pluginVersionOption);
+		cmd.AddOption(pluginPreleaseOption);
+		cmd.SetHandler(HandlePluginInstall,
 			new LoggerBinder("TradePath.Cli.Commands.Plugin.Install"),
 			GlobalOptions.Verbosity,
 			new BindingContextService<IAnsiConsole>(),
-			new PluginManagerBinder()
+			new PluginManagerBinder(),
+			pluginIdArgument,
+			pluginVersionOption,
+			pluginPreleaseOption
 		);
 		return cmd;
-
-		async Task<int> Handle(ILogger logger, LogLevel verbosity, IAnsiConsole console,
-			IPluginManager pluginInstallation)
-		{
-			await pluginInstallation.InstallPluginAsync(new PluginInstallConfiguration(
-				PluginName.From("TradePath.Plugins.Edsm"),
-				VersionRange.All,
-				false
-			));
-
-			var scan = await pluginInstallation.FindPluginsAsync<ISystemNavigationProvider>();
-			
-			var plugin = await pluginInstallation.LoadPluginAsync<ISystemNavigationProvider>(scan.First());
-
-			try
-			{
-				plugin.GetStationData(null);
-			}
-			catch (NotImplementedException)
-			{
-				
-			}
-			
-			return 0;
-		}
 	}
-	
+
+	private static async Task<int> HandlePluginInstall(ILogger logger, LogLevel verbosity, IAnsiConsole console, IPluginManager pluginInstallation, string pluginId, VersionRange? pluginVersion, bool allowPreRelease)
+	{
+		var installConfig = new PluginInstallConfiguration(
+			PluginName.From(pluginId),
+			pluginVersion,
+			allowPreRelease
+		);
+
+		if (!console.Profile.Out.IsTerminal)
+		{
+			await pluginInstallation.InstallPluginAsync(installConfig);
+		}
+		else
+		{
+			await HandlePluginInstallWithConsole(console, pluginInstallation, installConfig);
+		}
+			
+		return 0;
+	}
+
+	private static async Task HandlePluginInstallWithConsole(IAnsiConsole console, IPluginManager pluginInstallation, PluginInstallConfiguration installConfig)
+	{
+		await console
+			.Progress()
+			.StartAsync(async ctx =>
+			{
+				var rootResolutionTask = ctx.AddTask(
+					Resources.Commands.Plugin_Install_Messages_ResolvingDependencies,
+					true, 3
+				);
+				ProgressTask? rootInstallationTask = null;
+					
+				var resolutionTasks = new Dictionary<string, ProgressTask>();
+				var installationTasks = new Dictionary<string, ProgressTask>();
+					
+				var progress = new Progress<PluginInstallationProgress>();
+				
+				progress.ProgressChanged += OnProgressChanged;
+
+				await pluginInstallation.InstallPluginAsync(installConfig, progress);
+					
+				progress.ProgressChanged -= OnProgressChanged;
+				return;
+
+				void HandleNewResolutionUpdates(IDictionary<string, string>? newResolutionTasks)
+				{
+					foreach (var newResolution in newResolutionTasks ?? ReadOnlyDictionary<string, string>.Empty)
+					{
+						if (!resolutionTasks.TryGetValue(newResolution.Key, out var parentTask))
+						{
+							parentTask = rootResolutionTask;
+						}
+						resolutionTasks[newResolution.Value] = ctx.AddTaskAfter(
+							newResolution.Value,
+							parentTask
+						).IsIndeterminate();
+					}
+				}
+				
+				void HandleResolutionCompletions(ICollection<string>? completedResolutionTasks)
+				{
+					foreach (var completedResolution in completedResolutionTasks ?? Array.Empty<string>())
+					{
+						if (resolutionTasks.TryGetValue(completedResolution, out var task))
+						{
+							task.StopTask();
+						}
+					}
+				}
+
+				void HandleInstallationTasks(IDictionary<string, int> tasks)
+				{
+					rootResolutionTask.StopTask();
+				
+					rootInstallationTask ??= ctx.AddTask(
+						Resources.Commands.Plugin_Install_Messages_InstallingPlugin,
+						true, tasks.Count
+					);
+							
+					foreach (var (name, p) in tasks)
+					{
+						if (!installationTasks.TryGetValue(name, out var task))
+						{
+							task = ctx.AddTaskAfter(
+								name,
+								rootInstallationTask,
+								false,
+								4
+							);
+							installationTasks[name] = task;
+						}
+						
+						UpdateTask(p, task);
+					}
+
+					void UpdateTask(int p, ProgressTask task)
+					{
+						task.Value = p;
+						switch (p)
+						{
+							case > 0 when !task.IsStarted:
+								task.StartTask();
+								break;
+							case >= 4:
+								task.StopTask();
+								break;
+						}
+					}
+				}
+				
+				void OnProgressChanged(object? _, PluginInstallationProgress e)
+				{
+					HandleNewResolutionUpdates(e.NewResolutionTasks);
+					HandleResolutionCompletions(e.CompletedResolutionTasks);
+						
+					if (e.RunningSimplification)
+					{
+						rootResolutionTask
+							.Value(1)
+							.Description = Resources.Commands.Plugin_Install_Messages_SimplifyingDependencies;
+					}
+						
+					if (e.InstallationTasks != null)
+					{
+						HandleInstallationTasks(e.InstallationTasks);
+					}
+				}
+			});
+	}
+
 	private static Command BuildUninstallCommand()
 	{
 		var cmd = new Command(Resources.Commands.Plugin_Uninstall_Name, Resources.Commands.Plugin_Uninstall_Description);

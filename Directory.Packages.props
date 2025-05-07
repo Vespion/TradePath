@@ -1,47 +1,48 @@
 ﻿<Project ToolsVersion="15.0">
-  <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-  </PropertyGroup>
-  <ItemGroup Label="DependencyVersions">
-    <PackageVersion Include="CommunityToolkit.Labs.AppServices" Version="0.1.250319-build.2093" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.4" />
-    <PackageVersion Include="NetTopologySuite" Version="2.6.0" />
-    <PackageVersion Include="NuGet.Common" Version="6.13.2" />
-    <PackageVersion Include="NuGet.Configuration" Version="6.13.2" />
-    <PackageVersion Include="NuGet.Frameworks" Version="6.13.2" />
-    <PackageVersion Include="NuGet.PackageManagement" Version="6.13.2" />
-    <PackageVersion Include="NuGet.Packaging" Version="6.13.2" />
-    <PackageVersion Include="NuGet.Protocol" Version="6.13.2" />
-    <PackageVersion Include="NuGet.Resolver" Version="6.13.2" />
-    <PackageVersion Include="NuGet.Versioning" Version="6.13.2" />
-    <PackageVersion Include="Prise" Version="6.0.0" />
-    <PackageVersion Include="Spectre.Console" Version="0.50.0" />
-    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
-    <PackageVersion Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.11" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageVersion Include="TUnit" Version="0.18.60" />
-    <PackageVersion Include="Validly.Extensions.Validators" Version="1.1.2" />
-    <PackageVersion Include="Validly.SourceGenerator" Version="1.1.4" />
-    <PackageVersion Include="Vogen" Version="7.0.3" />
-  </ItemGroup>
-  <ItemGroup Label="PackagingVersions">
-    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742" />
-    <PackageVersion Include="Cake.Frosting" Version="5.0.0" />
-    <PackageVersion Include="JsonPeek" Version="1.2.0" PrivateAssets="all" DevelopmentDependency="true" ExcludeAssets="runtime" />
-  </ItemGroup>
-  <ItemGroup Label="TransitiveDependencyVersionPins">
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.8.0" />
-  </ItemGroup>
-  <ItemGroup Label="GlobalPackages">
-  </ItemGroup>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+	</PropertyGroup>
+	<ItemGroup Label="DependencyVersions">
+		<PackageVersion Include="CommunityToolkit.Labs.AppServices" Version="0.1.250319-build.2093"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.4"/>
+		<PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.4"/>
+		<PackageVersion Include="NetTopologySuite" Version="2.6.0"/>
+		<PackageVersion Include="NuGet.Common" Version="6.13.2"/>
+		<PackageVersion Include="NuGet.Configuration" Version="6.13.2"/>
+		<PackageVersion Include="NuGet.Frameworks" Version="6.13.2"/>
+		<PackageVersion Include="NuGet.PackageManagement" Version="6.13.2"/>
+		<PackageVersion Include="NuGet.Packaging" Version="6.13.2"/>
+		<PackageVersion Include="NuGet.Protocol" Version="6.13.2"/>
+		<PackageVersion Include="NuGet.Resolver" Version="6.13.2"/>
+		<PackageVersion Include="NuGet.Versioning" Version="6.13.2"/>
+		<PackageVersion Include="Prise" Version="6.0.0"/>
+		<PackageVersion Include="Spectre.Console" Version="0.50.0"/>
+		<PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11"/>
+		<PackageVersion Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.11"/>
+		<PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1"/>
+		<PackageVersion Include="TUnit" Version="0.18.60"/>
+		<PackageVersion Include="Validly.Extensions.Validators" Version="1.1.2"/>
+		<PackageVersion Include="Validly.SourceGenerator" Version="1.1.4"/>
+		<PackageVersion Include="Vogen" Version="7.0.3"/>
+	</ItemGroup>
+	<ItemGroup Label="PackagingVersions">
+		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1742"/>
+		<PackageVersion Include="Cake.Frosting" Version="5.0.0"/>
+		<PackageVersion Include="JsonPeek" Version="1.2.0" PrivateAssets="all" DevelopmentDependency="true" ExcludeAssets="runtime"/>
+	</ItemGroup>
+	<ItemGroup Label="TransitiveDependencyVersionPins">
+		<PackageVersion Include="Microsoft.CodeAnalysis" Version="4.8.0"/>
+	</ItemGroup>
+	<ItemGroup Label="GlobalPackages">
+	</ItemGroup>
 </Project>
