@@ -1,11 +1,10 @@
-﻿using NetTopologySuite.Geometries;
-using TradePath.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using NetTopologySuite.Geometries;
 using TradePath.Models.Validation;
 using Validly;
 using Validly.Extensions.Validators.Collections;
 using Validly.Extensions.Validators.Common;
 using Validly.Extensions.Validators.Numbers;
-using Validly.Validators;
 using Vogen;
 
 namespace TradePath.Models;
@@ -13,20 +12,25 @@ namespace TradePath.Models;
 [Validatable(NoAutoValidators = true)]
 public partial class StarSystem
 {
-	[Required, GreaterThan(0)]
+	[Validly.Extensions.Validators.Common.Required]
+	[GreaterThan(0)]
 	public required StarSystemId Id { get; set; }
-	
-	[Required, NotEmpty]
+
+	[Validly.Extensions.Validators.Common.Required]
+	[NotEmpty]
 	public required StarSystemName Name { get; set; }
-	
-	[Required, ZCoordinate]
+
+	[Validly.Extensions.Validators.Common.Required]
+	[ZCoordinate]
 	public required Point Position { get; set; }
-	
-	[System.ComponentModel.DataAnnotations.ConcurrencyCheck]
-	[Required]
+
+	[ConcurrencyCheck]
+	[Validly.Extensions.Validators.Common.Required]
 	public required DateTimeOffset LastModified { get; set; }
-	
-	[CustomValidation, Required, MinCollectionSize(1)]
+
+	[Validly.Validators.CustomValidation]
+	[Validly.Extensions.Validators.Common.Required]
+	[MinCollectionSize(1)]
 	public required ICollection<Star> Stars { get; set; }
 
 

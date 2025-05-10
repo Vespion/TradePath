@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using NetTopologySuite.Geometries;
-using TradePath.DataStore.Database;
 using TradePath.Models;
+using Vogen;
 
 namespace TradePath.DataStore.Database;
 
@@ -13,9 +13,9 @@ public class GalDataContext(DbContextOptions<GalDataContext> options) : DbContex
 	public DbSet<Station> Stations { get; set; } = null!;
 
 	public DbSet<NameFts<StationId, Station>> StationNameIndex { get; set; } = null!;
-	
+
 	public DbSet<NameFts<StarSystemId, StarSystem>> SystemNameIndex { get; set; } = null!;
-	
+
 	/// <inheritdoc />
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -33,7 +33,7 @@ public class GalDataContext(DbContextOptions<GalDataContext> options) : DbContex
 		{
 			x.Property(fts => fts.Match).HasColumnName(nameof(StationNameIndex));
 		});
-		
+
 		modelBuilder.Entity<NameFts<StationId, Station>>(x =>
 		{
 			x.Property(fts => fts.Match).HasColumnName(nameof(SystemNameIndex));
@@ -63,9 +63,9 @@ public class GalDataContext(DbContextOptions<GalDataContext> options) : DbContex
 	}
 }
 
-[Vogen.EfCoreConverter<StarId>]
-[Vogen.EfCoreConverter<StarSystemId>]
-[Vogen.EfCoreConverter<StarSystemName>]
-[Vogen.EfCoreConverter<StationId>]
-[Vogen.EfCoreConverter<StationName>]
+[EfCoreConverter<StarId>]
+[EfCoreConverter<StarSystemId>]
+[EfCoreConverter<StarSystemName>]
+[EfCoreConverter<StationId>]
+[EfCoreConverter<StationName>]
 public static partial class EfCoreVogenConverters;

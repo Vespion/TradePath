@@ -1,16 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.CommandLine;
-using System.CommandLine.Parsing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using Prise;
-using Prise.DependencyInjection;
 using Spectre.Console;
-using TradePath.Plugins.HostHelpers;
 using TradePath.Cli.Binders;
-using TradePath.Plugins.Contracts;
+using TradePath.Plugins.HostHelpers;
 using TradePath.Plugins.HostHelpers.Models;
 
 namespace TradePath.Cli.Commands;
@@ -19,6 +13,7 @@ public class PluginCommands
 {
 	public static Command Build()
 	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
 		var cmd = new Command(Resources.Commands.Plugin_Name, Resources.Commands.Plugin_Description)
 		{
 			BuildInstallCommand(),
@@ -29,9 +24,10 @@ public class PluginCommands
 		cmd.AddGlobalOption(GlobalOptions.WorkingDirectory);
 		return cmd;
 	}
-	
+
 	private static Command BuildListCommand()
 	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
 		var cmd = new Command(Resources.Commands.Plugin_List_Name, Resources.Commands.Plugin_List_Description);
 
 		// cmd.SetHandler(Handle,
@@ -120,17 +116,19 @@ public class PluginCommands
 		// 	return 0;
 		// }
 	}
-	
+
 	private static Command BuildSearchCommand()
 	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
 		var cmd = new Command(Resources.Commands.Plugin_Search_Name, Resources.Commands.Plugin_Search_Description);
 		return cmd;
 	}
-	
+
 	private static Command BuildInstallCommand()
 	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
 		var cmd = new Command(Resources.Commands.Plugin_Install_Name, Resources.Commands.Plugin_Install_Description);
-		
+
 		var pluginIdArgument = new Argument<string>(
 			Resources.Commands.Plugin_Install_Arguments_Id_Name,
 			Resources.Commands.Plugin_Install_Arguments_Id_Description
@@ -138,19 +136,20 @@ public class PluginCommands
 		{
 			Arity = ArgumentArity.ExactlyOne
 		};
-		
+
 		var pluginVersionOption = new Option<VersionRange?>(
 			Resources.Commands.Plugin_Install_Options_Version_Name.Split('|'),
-			parseArgument: result =>
+			result =>
 			{
 				var str = result.Tokens.Single().Value;
-				
+
 				if (VersionRange.TryParse(str, out var versionRange))
 				{
 					return versionRange;
 				}
 
-				result.ErrorMessage = string.Format(Resources.Commands.Plugin_Install_Messages_InvalidVersionRange, str);
+				result.ErrorMessage =
+					string.Format(Resources.Commands.Plugin_Install_Messages_InvalidVersionRange, str);
 
 				return null;
 			},
@@ -161,7 +160,7 @@ public class PluginCommands
 			IsRequired = false,
 			Arity = ArgumentArity.ExactlyOne
 		};
-		
+
 		var pluginPreleaseOption = new Option<bool>(
 			Resources.Commands.Plugin_Install_Options_PreRelease_Name.Split('|'),
 			Resources.Commands.Plugin_Install_Options_PreRelease_Description
@@ -170,7 +169,7 @@ public class PluginCommands
 			IsRequired = false,
 			Arity = ArgumentArity.ZeroOrOne
 		};
-		
+
 		cmd.AddArgument(pluginIdArgument);
 		cmd.AddOption(pluginVersionOption);
 		cmd.AddOption(pluginPreleaseOption);
@@ -186,8 +185,10 @@ public class PluginCommands
 		return cmd;
 	}
 
-	private static async Task<int> HandlePluginInstall(ILogger logger, LogLevel verbosity, IAnsiConsole console, IPluginManager pluginInstallation, string pluginId, VersionRange? pluginVersion, bool allowPreRelease)
+	private static async Task<int> HandlePluginInstall(ILogger logger, LogLevel verbosity, IAnsiConsole console,
+		IPluginManager pluginInstallation, string pluginId, VersionRange? pluginVersion, bool allowPreRelease)
 	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
 		var installConfig = new PluginInstallConfiguration(
 			PluginName.From(pluginId),
 			pluginVersion,
@@ -202,12 +203,14 @@ public class PluginCommands
 		{
 			await HandlePluginInstallWithConsole(console, pluginInstallation, installConfig);
 		}
-			
+
 		return 0;
 	}
 
-	private static async Task HandlePluginInstallWithConsole(IAnsiConsole console, IPluginManager pluginInstallation, PluginInstallConfiguration installConfig)
+	private static async Task HandlePluginInstallWithConsole(IAnsiConsole console, IPluginManager pluginInstallation,
+		PluginInstallConfiguration installConfig)
 	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
 		await console
 			.Progress()
 			.StartAsync(async ctx =>
@@ -217,36 +220,39 @@ public class PluginCommands
 					true, 3
 				);
 				ProgressTask? rootInstallationTask = null;
-					
+
 				var resolutionTasks = new Dictionary<string, ProgressTask>();
 				var installationTasks = new Dictionary<string, ProgressTask>();
-					
+
 				var progress = new Progress<PluginInstallationProgress>();
-				
+
 				progress.ProgressChanged += OnProgressChanged;
 
 				await pluginInstallation.InstallPluginAsync(installConfig, progress);
-					
+
 				progress.ProgressChanged -= OnProgressChanged;
 				return;
 
 				void HandleNewResolutionUpdates(IDictionary<string, string>? newResolutionTasks)
 				{
+					using var subAct = Telemetry.ActivitySource.StartActivityWithParent();
 					foreach (var newResolution in newResolutionTasks ?? ReadOnlyDictionary<string, string>.Empty)
 					{
 						if (!resolutionTasks.TryGetValue(newResolution.Key, out var parentTask))
 						{
 							parentTask = rootResolutionTask;
 						}
+
 						resolutionTasks[newResolution.Value] = ctx.AddTaskAfter(
 							newResolution.Value,
 							parentTask
 						).IsIndeterminate();
 					}
 				}
-				
+
 				void HandleResolutionCompletions(ICollection<string>? completedResolutionTasks)
 				{
+					using var subAct = Telemetry.ActivitySource.StartActivityWithParent();
 					foreach (var completedResolution in completedResolutionTasks ?? Array.Empty<string>())
 					{
 						if (resolutionTasks.TryGetValue(completedResolution, out var task))
@@ -258,13 +264,14 @@ public class PluginCommands
 
 				void HandleInstallationTasks(IDictionary<string, int> tasks)
 				{
+					using var subAct = Telemetry.ActivitySource.StartActivityWithParent();
 					rootResolutionTask.StopTask();
-				
+
 					rootInstallationTask ??= ctx.AddTask(
 						Resources.Commands.Plugin_Install_Messages_InstallingPlugin,
 						true, tasks.Count
 					);
-							
+
 					foreach (var (name, p) in tasks)
 					{
 						if (!installationTasks.TryGetValue(name, out var task))
@@ -277,12 +284,13 @@ public class PluginCommands
 							);
 							installationTasks[name] = task;
 						}
-						
+
 						UpdateTask(p, task);
 					}
 
 					void UpdateTask(int p, ProgressTask task)
 					{
+						using var subAct = Telemetry.ActivitySource.StartActivityWithParent();
 						task.Value = p;
 						switch (p)
 						{
@@ -295,19 +303,20 @@ public class PluginCommands
 						}
 					}
 				}
-				
+
 				void OnProgressChanged(object? _, PluginInstallationProgress e)
 				{
+					using var subAct = Telemetry.ActivitySource.StartActivityWithParent();
 					HandleNewResolutionUpdates(e.NewResolutionTasks);
 					HandleResolutionCompletions(e.CompletedResolutionTasks);
-						
+
 					if (e.RunningSimplification)
 					{
 						rootResolutionTask
 							.Value(1)
 							.Description = Resources.Commands.Plugin_Install_Messages_SimplifyingDependencies;
 					}
-						
+
 					if (e.InstallationTasks != null)
 					{
 						HandleInstallationTasks(e.InstallationTasks);
@@ -318,7 +327,9 @@ public class PluginCommands
 
 	private static Command BuildUninstallCommand()
 	{
-		var cmd = new Command(Resources.Commands.Plugin_Uninstall_Name, Resources.Commands.Plugin_Uninstall_Description);
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
+		var cmd = new Command(Resources.Commands.Plugin_Uninstall_Name,
+			Resources.Commands.Plugin_Uninstall_Description);
 		return cmd;
 	}
 }

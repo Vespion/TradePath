@@ -14,10 +14,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="DeviceId"/>
+		<PackageReference Include="DeviceId.Linux"/>
+		<PackageReference Include="DeviceId.Mac"/>
+		<PackageReference Include="DeviceId.Windows"/>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core"/>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite"/>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console"/>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug"/>
+		<PackageReference Include="OpenTelemetry"/>
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
+		<PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Process" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+		<PackageReference Include="OpenTelemetry.Resources.Host" />
+		<PackageReference Include="OpenTelemetry.Resources.OperatingSystem" />
+		<PackageReference Include="OpenTelemetry.Resources.ProcessRuntime" />
 		<PackageReference Include="Prise"/>
 		<PackageReference Include="Spectre.Console"/>
 		<PackageReference Include="System.CommandLine"/>

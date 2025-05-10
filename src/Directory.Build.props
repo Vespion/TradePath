@@ -1,5 +1,5 @@
 ﻿<Project>
-	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
 
 	<ItemGroup>
 		<!-- Include must be the fully qualified .NET type name of the Attribute to create. -->
@@ -24,8 +24,8 @@
 		<JsonPeek
 			ContentPath="$([MSBuild]::EnsureTrailingSlash($(MSBuildProjectDirectory)))package.json"
 			Query="$.version">
-			<Output TaskParameter="Result" PropertyName="Version" />
-			<Output TaskParameter="Result" PropertyName="PackageVersion" />
+			<Output TaskParameter="Result" PropertyName="Version"/>
+			<Output TaskParameter="Result" PropertyName="PackageVersion"/>
 		</JsonPeek>
 	</Target>
 </Project>

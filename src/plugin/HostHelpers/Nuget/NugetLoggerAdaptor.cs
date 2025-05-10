@@ -10,28 +10,49 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 namespace TradePath.Plugins.HostHelpers.Nuget;
 
 [SuppressMessage("ReSharper", "TemplateIsNotCompileTimeConstantProblem")]
-public class NugetLoggingAdaptor(ILogger logger): NuGet.Common.ILogger
+internal class NugetLoggingAdaptor(ILogger logger) : NuGet.Common.ILogger
 {
 	/// <inheritdoc />
-	public void LogDebug(string data) => logger.LogDebug(data);
+	public void LogDebug(string data)
+	{
+		logger.LogDebug(data);
+	}
 
 	/// <inheritdoc />
-	public void LogVerbose(string data) => logger.LogTrace(data);
+	public void LogVerbose(string data)
+	{
+		logger.LogTrace(data);
+	}
 
 	/// <inheritdoc />
-	public void LogInformation(string data) => logger.LogInformation(data);
+	public void LogInformation(string data)
+	{
+		logger.LogInformation(data);
+	}
 
 	/// <inheritdoc />
-	public void LogMinimal(string data) => logger.LogInformation(data);
+	public void LogMinimal(string data)
+	{
+		logger.LogInformation(data);
+	}
 
 	/// <inheritdoc />
-	public void LogWarning(string data) => logger.LogWarning(data);
+	public void LogWarning(string data)
+	{
+		logger.LogWarning(data);
+	}
 
 	/// <inheritdoc />
-	public void LogError(string data) => logger.LogError(data);
+	public void LogError(string data)
+	{
+		logger.LogError(data);
+	}
 
 	/// <inheritdoc />
-	public void LogInformationSummary(string data) => logger.LogInformation(data);
+	public void LogInformationSummary(string data)
+	{
+		logger.LogInformation(data);
+	}
 
 	/// <inheritdoc />
 	public void Log(NuGet.Common.LogLevel level, string data)
@@ -80,14 +101,14 @@ public class NugetLoggingAdaptor(ILogger logger): NuGet.Common.ILogger
 			NuGet.Common.LogLevel.Minimal => LogLevel.Information,
 			NuGet.Common.LogLevel.Warning => LogLevel.Warning,
 			NuGet.Common.LogLevel.Error => LogLevel.Error,
-			_ => LogLevel.None,
+			_ => LogLevel.None
 		};
-		
+
 		if (logLevel == LogLevel.None)
 		{
 			Debug.WriteLine($"Unknown log level: {message.Level} - {message.Message}");
 		}
-		
+
 		logger.Log(logLevel, new EventId((int)message.Code, message.Code.ToString()), message.Message);
 	}
 

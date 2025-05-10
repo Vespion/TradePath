@@ -13,12 +13,12 @@ public class ZCoordinateAttribute : Attribute
 		"Position is not valid. It must be a valid coordinate.",
 		"Validation.DataStore.ZCoordinate.Invalid"
 	);
-	
+
 	private static readonly ValidationMessage MissingZMessage = new(
 		"Position is not valid. Z Ordinate is missing.",
 		"Validation.DataStore.ZCoordinate.MissingZ"
 	);
-	
+
 	private static readonly ValidationMessage MSetMessage = new(
 		"Position is not valid. M Ordinate must not be set.",
 		"Validation.DataStore.ZCoordinate.MSet"
@@ -36,7 +36,7 @@ public class ZCoordinateAttribute : Attribute
 		{
 			return MissingZMessage;
 		}
-		
+
 		if (!double.IsNaN(value.M))
 		{
 			return MSetMessage;

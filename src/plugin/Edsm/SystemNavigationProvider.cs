@@ -1,11 +1,13 @@
 ﻿using Prise.Plugin;
-using TradePath.Models;
 using TradePath.Plugins.Contracts;
 using StarSystem = TradePath.Models.StarSystem;
 using Station = TradePath.Models.Station;
 
 namespace TradePath.Plugins.Edsm;
 
+/// <summary>
+///     Implements the <see cref="ISystemNavigationProvider" /> interface using data from EDSM.
+/// </summary>
 [Plugin(PluginType = typeof(ISystemNavigationProvider))]
 public class SystemNavigationProvider : ISystemNavigationProvider
 {

@@ -14,7 +14,7 @@ internal static class GlobalOptions
 		IsRequired = false,
 		Arity = ArgumentArity.ZeroOrOne
 	};
-	
+
 	public static Option<LogLevel> Verbosity { get; } = new(
 		Resources.Commands.Global_Verbosity_Name.Split('|'),
 		() => LogLevel.Information,

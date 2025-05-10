@@ -5,7 +5,9 @@ using TradePath.DataStore.Database;
 namespace TradePath.Cli;
 
 #if DEBUG
-public class DesignTimeFactory: IDesignTimeDbContextFactory<GalDataContext>
+// ReSharper disable once UnusedType.Global
+// ReSharper disable once MissingXmlDoc
+public class DesignTimeFactory : IDesignTimeDbContextFactory<GalDataContext>
 {
 	/// <inheritdoc />
 	public GalDataContext CreateDbContext(string[] args)

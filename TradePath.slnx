@@ -1,79 +1,81 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-    <Platform Name="ARM" />
-    <Platform Name="ARM64" />
-    <Platform Name="x64" />
-    <Platform Name="x86" />
-  </Configurations>
-  <Folder Name="/Data/">
-    <Project Path="src\data\DataStore\DataStore.csproj">
-      <Configuration Solution="Debug|ARM" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|ARM64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
-      <Configuration Solution="Release|ARM" Project="Release|Any CPU" />
-      <Configuration Solution="Release|ARM64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
-    </Project>
-    <Project Path="src\data\Models\Models.csproj">
-      <Configuration Solution="Debug|ARM" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|ARM64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
-      <Configuration Solution="Release|ARM" Project="Release|Any CPU" />
-      <Configuration Solution="Release|ARM64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
-    </Project>
-  </Folder>
-  <Folder Name="/Interface/">
-    <Project Path="src\interface\Cli\Cli.csproj">
-      <Configuration Solution="Debug|ARM" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|ARM64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
-      <Configuration Solution="Release|ARM" Project="Release|Any CPU" />
-      <Configuration Solution="Release|ARM64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
-    </Project>
-  </Folder>
-  <Folder Name="/Interface/Packaging/" />
-  <Folder Name="/Interface/Packaging/Cli/">
-    <Project Path="pkg/Cli/Msix/Msix.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" />
-  </Folder>
-  <Folder Name="/Plugins/">
-    <Project Path="src\plugin\Contracts\Contracts.csproj">
-      <Configuration Solution="Debug|ARM" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|ARM64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
-      <Configuration Solution="Release|ARM" Project="Release|Any CPU" />
-      <Configuration Solution="Release|ARM64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
-    </Project>
-    <Project Path="src\plugin\Edsm\Edsm.csproj">
-      <Configuration Solution="Debug|ARM" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|ARM64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
-      <Configuration Solution="Release|ARM" Project="Release|Any CPU" />
-      <Configuration Solution="Release|ARM64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
-    </Project>
-    <Project Path="src\plugin\HostHelpers\HostHelpers.csproj" Type="Classic C#">
-      <Configuration Solution="Debug|ARM" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|ARM64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x64" Project="Debug|Any CPU" />
-      <Configuration Solution="Debug|x86" Project="Debug|Any CPU" />
-      <Configuration Solution="Release|ARM" Project="Release|Any CPU" />
-      <Configuration Solution="Release|ARM64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x64" Project="Release|Any CPU" />
-      <Configuration Solution="Release|x86" Project="Release|Any CPU" />
-    </Project>
-  </Folder>
+	<Configurations>
+		<Platform Name="Any CPU"/>
+		<Platform Name="ARM"/>
+		<Platform Name="ARM64"/>
+		<Platform Name="x64"/>
+		<Platform Name="x86"/>
+	</Configurations>
+	<Folder Name="/Data/">
+		<Project Path="src\data\DataStore\DataStore.csproj">
+			<Configuration Solution="Debug|ARM" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|ARM64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x86" Project="Debug|Any CPU"/>
+			<Configuration Solution="Release|ARM" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|ARM64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x86" Project="Release|Any CPU"/>
+		</Project>
+		<Project Path="src\data\Models\Models.csproj">
+			<Configuration Solution="Debug|ARM" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|ARM64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x86" Project="Debug|Any CPU"/>
+			<Configuration Solution="Release|ARM" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|ARM64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x86" Project="Release|Any CPU"/>
+		</Project>
+	</Folder>
+	<Folder Name="/Interface/">
+		<Project Path="src\interface\Cli\Cli.csproj">
+			<Configuration Solution="Debug|ARM" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|ARM64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x86" Project="Debug|Any CPU"/>
+			<Configuration Solution="Release|ARM" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|ARM64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x86" Project="Release|Any CPU"/>
+		</Project>
+	</Folder>
+	<Folder Name="/Interface/Packaging/" Id="d9a2bdca-2954-9c43-6903-c44499d1d562"/>
+	<Folder Name="/Interface/Packaging/Cli/" Id="3b880892-3246-48eb-dba4-2f89654e716b">
+		<Project Path="pkg/Cli/Msix/Msix.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5">
+			<Deploy Solution="Release|*"/>
+		</Project>
+	</Folder>
+	<Folder Name="/Plugins/">
+		<Project Path="src\plugin\Contracts\Contracts.csproj">
+			<Configuration Solution="Debug|ARM" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|ARM64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x86" Project="Debug|Any CPU"/>
+			<Configuration Solution="Release|ARM" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|ARM64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x86" Project="Release|Any CPU"/>
+		</Project>
+		<Project Path="src\plugin\Edsm\Edsm.csproj">
+			<Configuration Solution="Debug|ARM" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|ARM64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x86" Project="Debug|Any CPU"/>
+			<Configuration Solution="Release|ARM" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|ARM64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x86" Project="Release|Any CPU"/>
+		</Project>
+		<Project Path="src\plugin\HostHelpers\HostHelpers.csproj">
+			<Configuration Solution="Debug|ARM" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|ARM64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x64" Project="Debug|Any CPU"/>
+			<Configuration Solution="Debug|x86" Project="Debug|Any CPU"/>
+			<Configuration Solution="Release|ARM" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|ARM64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x64" Project="Release|Any CPU"/>
+			<Configuration Solution="Release|x86" Project="Release|Any CPU"/>
+		</Project>
+	</Folder>
 </Solution>
