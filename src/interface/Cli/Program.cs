@@ -7,6 +7,7 @@ using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry;
@@ -15,110 +16,184 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Spectre.Console;
-using TradePath.Cli;
 using TradePath.Cli.Commands;
 
-var resourceBuilder = ResourceBuilder
-	.CreateDefault()
-	.AddTelemetrySdk()
-	.AddEnvironmentVariableDetector()
-	.AddHostDetector()
-	.AddOperatingSystemDetector()
-	.AddProcessRuntimeDetector()
-	.AddService(
-		Telemetry.ActivitySource.Name,
-		"TradePath",
-		Telemetry.ActivitySource.Version
-	);
+namespace TradePath.Cli;
 
-var tracerProvider = Sdk.CreateTracerProviderBuilder()
-	.AddSource(Telemetry.ActivitySource.Name, "TradePath.*")
-	.AddEntityFrameworkCoreInstrumentation()
-	.AddHttpClientInstrumentation()
-	.SetResourceBuilder(resourceBuilder)
-	.AddOtlpExporter()
-	.Build();
-
-var meterProvider = Sdk.CreateMeterProviderBuilder()
-	.AddMeter(Telemetry.ActivitySource.Name, "TradePath.*")
-	.AddProcessInstrumentation()
-	.AddRuntimeInstrumentation()
-	.AddHttpClientInstrumentation()
-	.SetResourceBuilder(resourceBuilder)
-	.AddOtlpExporter()
-	.Build();
-
-var loggerFactory = LoggerFactory.Create(lb =>
+internal partial class Program
 {
-	lb.SetMinimumLevel(LogLevel.Trace);
+	private static readonly IConfiguration Configuration = ConfigureSettings();
 
-	lb.AddOpenTelemetry(logging =>
+	private static TracerProvider _tracerProvider = null!;
+	private static MeterProvider _meterProvider = null!;
+	private static ILoggerFactory _loggerFactory = null!;
+	private static ILogger<Program> _logger = null!;
+
+	private static void ConfigureTelemetry()
 	{
-		logging.SetResourceBuilder(resourceBuilder);
-		logging.AddOtlpExporter();
-	});
+		var resourceBuilder = ResourceBuilder
+			.CreateDefault()
+			.AddTelemetrySdk()
+			.AddEnvironmentVariableDetector()
+			.AddHostDetector()
+			.AddOperatingSystemDetector()
+			.AddProcessRuntimeDetector()
+			.AddProcessDetector()
+			.AddAttributes([new KeyValuePair<string, object>("app.type", "console")])
+			.AddService(
+				Telemetry.ActivitySource.Name,
+				"TradePath",
+				Telemetry.ActivitySource.Version
+			);
 
-	lb.AddDebug();
-});
+		_tracerProvider = Sdk.CreateTracerProviderBuilder()
+			.AddSource(Telemetry.ActivitySource.Name, "TradePath.*")
+			.AddEntityFrameworkCoreInstrumentation()
+			.AddHttpClientInstrumentation()
+			.SetResourceBuilder(resourceBuilder)
+			.AddOtlpExporter()
+			.Build();
 
-var logger = loggerFactory.CreateLogger<Program>();
+		_meterProvider = Sdk.CreateMeterProviderBuilder()
+			.AddMeter(Telemetry.ActivitySource.Name, "TradePath.*")
+			.AddProcessInstrumentation()
+			.AddRuntimeInstrumentation()
+			.AddHttpClientInstrumentation()
+			.SetResourceBuilder(resourceBuilder)
+			.AddOtlpExporter()
+			.Build();
 
-LogMessages.TelemetryActive(logger);
-
-try
-{
-	using var act = Telemetry.ActivitySource.StartActivityWithParent();
-
-	LogMessages.ConstructingCommandParser(logger);
-	var rootCommand = new RootCommand("Command line interface for TradePath")
-	{
-		Name = "tradepath"
-	};
-
-	rootCommand.AddCommand(DatabaseCommands.Build());
-	rootCommand.AddCommand(PluginCommands.Build());
-
-	act?.AddEvent(new ActivityEvent("ConfiguredCommandTree"));
-
-	var builder = new CommandLineBuilder(rootCommand);
-	LogMessages.CommandTreeConstructed(logger);
-	
-	builder.UseDefaults();
-
-	builder.AddMiddleware(context =>
-	{
-		// ReSharper disable once AccessToDisposedClosure
-		context.BindingContext.AddService(_ => loggerFactory);
-		context.BindingContext.AddService(typeof(IMeterFactory), _ => new Telemetry.MeterFactory());
-		context.BindingContext.AddService(typeof(IAnsiConsole), sp =>
+		_loggerFactory = LoggerFactory.Create(lb =>
 		{
-			var console = sp.GetRequiredService<IConsole>();
-			return AnsiConsole.Create(new AnsiConsoleSettings
+			lb.SetMinimumLevel(LogLevel.Trace);
+			lb.AddConfiguration(Configuration);
+
+			lb.AddOpenTelemetry(logging =>
 			{
-				Ansi = console.IsOutputRedirected ? AnsiSupport.No : AnsiSupport.Detect,
-				Out = new AnsiConsoleOutput(console.Out.CreateTextWriter()),
-				ColorSystem = ColorSystemSupport.Detect,
-				Interactive = console.IsInputRedirected ? InteractionSupport.No : InteractionSupport.Detect,
-				Enrichment = new ProfileEnrichment
-				{
-					UseDefaultEnrichers = true
-				}
+				logging.SetResourceBuilder(resourceBuilder);
+				logging.AddOtlpExporter();
 			});
+
+			lb.AddDebug();
 		});
-	}, MiddlewareOrder.Configuration);
 
-	act?.AddEvent(new ActivityEvent("ConfiguredPipeline"));
+		_logger = _loggerFactory.CreateLogger<Program>();
 
-	var parser = builder.Build();
-	act?.AddEvent(new ActivityEvent("BuiltParser"));
-	LogMessages.CommandParserConstructed(logger);
+		LogMessages.TelemetryActive(_logger);
+	}
 
-	// ReSharper disable once ExplicitCallerInfoArgument
-	// ReSharper disable once ConvertToUsingDeclaration
-	using (var cmdAct = Telemetry.ActivitySource.StartActivityWithParent("HandleCommandExecution", ActivityKind.Server))
+	private static IConfiguration ConfigureSettings()
 	{
-		LogMessages.CommandExecutionStarted(logger, args);
+		var configuration = new ConfigurationBuilder();
 		
+#if WINDOWS
+		var pluginPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "plugins");
+#else
+		var pluginPath = Path.Combine(Xdg.Directories.BaseDirectory.DataHome, "TradePath", "plugins");
+#endif
+		configuration.AddInMemoryCollection([
+			new KeyValuePair<string, string?>("Plugins:PluginFolder", pluginPath)
+		]);
+
+#if WINDOWS
+		configuration.AddWindowsConfiguration();
+#else
+		var configFilePath = Path.Combine(Xdg.Directories.BaseDirectory.ConfigHome, "TradePath", "cli.config.toml");
+		configuration.AddTomlFile(configFilePath, true);
+#endif
+		configuration.AddEnvironmentVariables();
+		configuration.AddEnvironmentVariables("TRADEPATH__");
+		configuration.AddEnvironmentVariables("TRADEPATH_CLI__");
+
+		return configuration.Build();
+	}
+
+	public static async Task<int> Main(string[] args)
+	{
+		ConfigureTelemetry();
+
+		try
+		{
+			using var act = Telemetry.ActivitySource.StartActivityWithParent(Telemetry.Name);
+
+			var builder = BuildCommandTree();
+
+			ConfigureCliPipeline(builder);
+			act?.AddEvent(new ActivityEvent("ConfiguredPipeline"));
+
+			var parser = builder.Build();
+			act?.AddEvent(new ActivityEvent("BuiltParser"));
+			LogMessages.CommandParserConstructed(_logger);
+
+			return await HandleCommandExecution(parser, args).ConfigureAwait(false);
+		}
+		finally
+		{
+			_tracerProvider.ForceFlush();
+			_meterProvider.ForceFlush();
+
+			_tracerProvider.Dispose();
+			_meterProvider.Dispose();
+			_loggerFactory.Dispose();
+		}
+	}
+
+	private static void ConfigureCliPipeline(CommandLineBuilder builder)
+	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
+		builder.UseDefaults();
+		builder.AddMiddleware(context =>
+		{
+			// ReSharper disable once AccessToDisposedClosure
+			context.BindingContext.AddService(_ => _loggerFactory);
+			context.BindingContext.AddService(typeof(IMeterFactory), _ => new Telemetry.MeterFactory());
+			context.BindingContext.AddService(typeof(IAnsiConsole), sp =>
+			{
+				var console = sp.GetRequiredService<IConsole>();
+				return AnsiConsole.Create(new AnsiConsoleSettings
+				{
+					Ansi = console.IsOutputRedirected ? AnsiSupport.No : AnsiSupport.Detect,
+					Out = new AnsiConsoleOutput(console.Out.CreateTextWriter()),
+					ColorSystem = ColorSystemSupport.Detect,
+					Interactive = console.IsInputRedirected ? InteractionSupport.No : InteractionSupport.Detect,
+					Enrichment = new ProfileEnrichment
+					{
+						UseDefaultEnrichers = true
+					}
+				});
+			});
+
+			context.BindingContext.AddService(typeof(IConfiguration), _ => Configuration);
+			context.BindingContext.AddService(typeof(IConfigurationRoot), _ => Configuration);
+		}, MiddlewareOrder.Configuration);
+	}
+
+	private static CommandLineBuilder BuildCommandTree()
+	{
+		using var act = Telemetry.ActivitySource.StartActivityWithParent();
+		LogMessages.ConstructingCommandParser(_logger);
+		var rootCommand = new RootCommand("Command line interface for TradePath")
+		{
+			Name = "tradepath"
+		};
+
+		rootCommand.AddCommand(DatabaseCommands.Build());
+		rootCommand.AddCommand(PluginCommands.Build());
+		rootCommand.AddCommand(ConfigurationCommands.Build());
+
+		act?.AddEvent(new ActivityEvent("ConfiguredCommandTree"));
+
+		var builder = new CommandLineBuilder(rootCommand);
+		LogMessages.CommandTreeConstructed(_logger);
+		return builder;
+	}
+
+	private static async Task<int> HandleCommandExecution(Parser parser, string[] args)
+	{
+		using var cmdAct =
+			Telemetry.ActivitySource.StartActivityWithParent("HandleCommandExecution", ActivityKind.Server);
+		LogMessages.CommandExecutionStarted(_logger, args);
+
 		try
 		{
 			var result = await parser.InvokeAsync(args);
@@ -127,48 +202,40 @@ try
 					{ "exit_code", result }
 				}
 			));
-			LogMessages.CommandExecutionComplete(logger, result);
+			LogMessages.CommandExecutionComplete(_logger, result);
 			cmdAct?.SetStatus(ActivityStatusCode.Ok, result.ToString());
 			return result;
 		}
 		catch (Exception ex)
 		{
-			LogMessages.CommandExecutionFailed(logger, ex);
+			LogMessages.CommandExecutionFailed(_logger, ex);
 			cmdAct?.AddException(ex).SetStatus(ActivityStatusCode.Error);
 			return -1;
 		}
 	}
-}
-finally
-{
-	tracerProvider.ForceFlush();
-	meterProvider.ForceFlush();
 
-	tracerProvider.Dispose();
-	meterProvider.Dispose();
-	loggerFactory.Dispose();
-}
+	static partial class LogMessages
+	{
+		[LoggerMessage(Level = LogLevel.Critical, Message = "An error occurred during command execution")]
+		internal static partial void CommandExecutionFailed(ILogger<Program> logger, Exception ex);
 
-static partial class LogMessages
-{
-	[LoggerMessage(Level = LogLevel.Critical, Message = "An error occurred during command execution")]
-	internal static partial void CommandExecutionFailed(ILogger<Program> logger, Exception ex);
-	
-	[LoggerMessage(Level = LogLevel.Information, Message = "Command execution complete, exited with code {ExitCode}")]
-	internal static partial void CommandExecutionComplete(ILogger<Program> logger, int exitCode);
-	
-	[LoggerMessage(Level = LogLevel.Information, Message = "Command execution started with args {Args}")]
-	internal static partial void CommandExecutionStarted(ILogger<Program> logger, string[] args);
-	
-	[LoggerMessage(Level = LogLevel.Debug, Message = "Telemetry active")]
-	internal static partial void TelemetryActive(ILogger<Program> logger);
-	
-	[LoggerMessage(Level = LogLevel.Trace, Message = "Command tree constructed")]
-	internal static partial void CommandTreeConstructed(ILogger<Program> logger);
-	
-	[LoggerMessage(Level = LogLevel.Debug, Message = "Command parser constructed")]
-	internal static partial void CommandParserConstructed(ILogger<Program> logger);
+		[LoggerMessage(Level = LogLevel.Information,
+			Message = "Command execution complete, exited with code {ExitCode}")]
+		internal static partial void CommandExecutionComplete(ILogger<Program> logger, int exitCode);
 
-	[LoggerMessage(Level = LogLevel.Debug, Message = "Constructing command parser")]
-	internal static partial void ConstructingCommandParser(ILogger<Program> logger);
+		[LoggerMessage(Level = LogLevel.Information, Message = "Command execution started with args {Args}")]
+		internal static partial void CommandExecutionStarted(ILogger<Program> logger, string[] args);
+
+		[LoggerMessage(Level = LogLevel.Debug, Message = "Telemetry active")]
+		internal static partial void TelemetryActive(ILogger<Program> logger);
+
+		[LoggerMessage(Level = LogLevel.Trace, Message = "Command tree constructed")]
+		internal static partial void CommandTreeConstructed(ILogger<Program> logger);
+
+		[LoggerMessage(Level = LogLevel.Debug, Message = "Command parser constructed")]
+		internal static partial void CommandParserConstructed(ILogger<Program> logger);
+
+		[LoggerMessage(Level = LogLevel.Debug, Message = "Constructing command parser")]
+		internal static partial void ConstructingCommandParser(ILogger<Program> logger);
+	}
 }

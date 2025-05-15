@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.CommandLine;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NuGet.Versioning;
 using Spectre.Console;
 using TradePath.Cli.Binders;
@@ -185,8 +186,13 @@ public class PluginCommands
 		return cmd;
 	}
 
-	private static async Task<int> HandlePluginInstall(ILogger logger, LogLevel verbosity, IAnsiConsole console,
-		IPluginManager pluginInstallation, string pluginId, VersionRange? pluginVersion, bool allowPreRelease)
+	private static async Task<int> HandlePluginInstall(
+		ILogger logger,
+		LogLevel verbosity,
+		IAnsiConsole console,
+		IPluginManager pluginInstallation,
+		string pluginId, VersionRange? pluginVersion, bool allowPreRelease
+	)
 	{
 		using var act = Telemetry.ActivitySource.StartActivityWithParent();
 		var installConfig = new PluginInstallConfiguration(
@@ -197,10 +203,12 @@ public class PluginCommands
 
 		if (!console.Profile.Out.IsTerminal)
 		{
+			act?.AddBaggage("app.console.output.terminal", bool.FalseString);
 			await pluginInstallation.InstallPluginAsync(installConfig);
 		}
 		else
 		{
+			act?.AddBaggage("app.console.output.terminal", bool.TrueString);
 			await HandlePluginInstallWithConsole(console, pluginInstallation, installConfig);
 		}
 

@@ -61,7 +61,7 @@
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 		<AppxPackageSigningTimestampServerUrl>http://timestamp.pkiaas.io/y9tN66Cyi4</AppxPackageSigningTimestampServerUrl>
 		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<AppxBundlePlatforms>x86</AppxBundlePlatforms>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
@@ -175,6 +175,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\src\interface\Cli\Cli.csproj">
 			<TrustLevel>Partial</TrustLevel>
+			<Properties>WapprojBuild=true</Properties>
 		</ProjectReference>
 	</ItemGroup>
 </Project>

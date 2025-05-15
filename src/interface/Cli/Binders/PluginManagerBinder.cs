@@ -17,16 +17,15 @@ internal class PluginManagerBinder : BinderBase<IPluginManager>
 	protected override IPluginManager GetBoundValue(BindingContext bindingContext)
 	{
 		using var act = Telemetry.ActivitySource.StartActivityWithParent();
-		var workingDirectory = bindingContext.ParseResult.GetValueForOption(GlobalOptions.WorkingDirectory)!;
-
-		var pluginPath = Path.Combine(workingDirectory.FullName, "plugins");
 
 		var loggerFactory = bindingContext.GetRequiredService<ILoggerFactory>();
 
+		var pluginBinder = new OptionsBinder<PluginConfiguration>("Plugins");
+		
 		return new PluginManager(
 			loggerFactory.CreateLogger<PluginManager>(),
 			bindingContext.GetRequiredService<IMeterFactory>(),
-			new OptionsWrapper<PluginConfiguration>(new PluginConfiguration(pluginPath)),
+			pluginBinder.Get(bindingContext),
 			new DefaultPluginLoader(
 				new PluginAssemblyScanner(
 					DefaultFactories.DefaultMetadataLoadContext,

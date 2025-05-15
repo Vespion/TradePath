@@ -4,6 +4,7 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup Label="DependencyVersions">
+    <PackageVersion Include="Alexinea.Extensions.Configuration.Toml" Version="7.0.0" />
     <PackageVersion Include="CommunityToolkit.Labs.AppServices" Version="0.1.250319-build.2093" />
     <PackageVersion Include="DeviceId" Version="6.9.0" />
     <PackageVersion Include="DeviceId.Linux" Version="6.9.0" />
@@ -14,8 +15,11 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.NetTopologySuite" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.4" />
@@ -36,9 +40,11 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Resources.Host" Version="1.12.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Resources.OperatingSystem" Version="1.12.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Resources.Process" Version="1.12.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Resources.ProcessRuntime" Version="1.12.0-beta.1" />
     <PackageVersion Include="Prise" Version="6.0.0" />
     <PackageVersion Include="Spectre.Console" Version="0.50.0" />
+    <PackageVersion Include="Spectre.Console.Json" Version="0.50.0" />
     <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
     <PackageVersion Include="SQLitePCLRaw.bundle_sqlite3" Version="2.1.11" />
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
@@ -46,6 +52,7 @@
     <PackageVersion Include="Validly.Extensions.Validators" Version="1.1.2" />
     <PackageVersion Include="Validly.SourceGenerator" Version="1.1.4" />
     <PackageVersion Include="Vogen" Version="7.0.3" />
+    <PackageVersion Include="Xdg.Directories" Version="0.1.2" />
   </ItemGroup>
   <ItemGroup Label="PackagingVersions">
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.3916" />

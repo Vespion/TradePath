@@ -2,12 +2,13 @@
 using System.Diagnostics.Metrics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using DeviceId;
 
 namespace TradePath.Cli;
 
 internal static class Telemetry
 {
+	internal static string Name => AssemblyName.Name ?? AssemblyName.FullName;
+	
 	private static AssemblyName AssemblyName => typeof(Telemetry).Assembly.GetName();
 
 	private static Version AssemblyVersion { get; } = AssemblyName.Version ?? new Version(0, 0, 0, 0);
@@ -18,21 +19,7 @@ internal static class Telemetry
 		.FirstOrDefault()?.InformationalVersion ?? AssemblyVersion.ToString(3);
 
 	public static ActivitySource ActivitySource { get; } =
-		new(AssemblyName.Name ?? AssemblyName.FullName, InformationalVersion);
-
-	public static string DeviceId => new DeviceIdBuilder()
-		.AddMachineName()
-		.AddOsVersion()
-		.OnWindows(windows => windows
-			.AddWindowsDeviceId()
-		)
-		.OnLinux(linux => linux
-			.AddMotherboardSerialNumber()
-			.AddSystemDriveSerialNumber())
-		.OnMac(mac => mac
-			.AddSystemDriveSerialNumber()
-			.AddPlatformSerialNumber())
-		.ToString();
+		new(Name, InformationalVersion);
 	
 	public static Activity? StartActivityWithParent(this ActivitySource activitySource, [CallerMemberName] string name = "", ActivityKind kind = ActivityKind.Internal)
 	{

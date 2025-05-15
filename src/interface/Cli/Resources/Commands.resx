@@ -35,6 +35,42 @@
 	<data name="Global.Verbosity.Description" xml:space="preserve">
 		<value>Set the verbosity level of the command.</value>
 	</data>
+	<data name="Configuration.Name" xml:space="preserve">
+		<value>config</value>
+	</data>
+	<data name="Configuration.Description" xml:space="preserve">
+		<value>Read and Modify configuration options</value>
+	</data>
+	<data name="Configuration.Sources.BuiltIn" xml:space="preserve">
+		<value>Built-In</value>
+	</data>
+	<data name="Configuration.Sources.Unknown" xml:space="preserve">
+		<value>Unknown</value>
+	</data>
+	<data name="Configuration.Sources.AppSettings" xml:space="preserve">
+		<value>App Settings</value>
+	</data>
+	<data name="Configuration.Dump.Name" xml:space="preserve">
+		<value>dump</value>
+	</data>
+	<data name="Configuration.Dump.Description" xml:space="preserve">
+		<value>Dump all configuration values as JSON</value>
+	</data>
+	<data name="Configuration.List.Name" xml:space="preserve">
+		<value>list</value>
+	</data>
+	<data name="Configuration.List.Description" xml:space="preserve">
+		<value>List all configuration values</value>
+	</data>
+	<data name="Configuration.List.Column.Key" xml:space="preserve">
+		<value>Setting Key</value>
+	</data>
+	<data name="Configuration.List.Column.Value" xml:space="preserve">
+		<value>Setting Value</value>
+	</data>
+	<data name="Configuration.List.Column.Source" xml:space="preserve">
+		<value>Setting Sourced From</value>
+	</data>
 	<data name="Database.Name" xml:space="preserve">
 		<value>database</value>
 	</data>
